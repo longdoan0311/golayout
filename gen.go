@@ -71,7 +71,6 @@ func travel() error {
 
 func compileTpl(tplString string) (string, error) {
 	buf := &bytes.Buffer{}
-	log.Infof("tplString %s", tplString)
 	tpl = template.Must(template.New("letter").Parse(tplString))
 
 	err := tpl.Execute(buf, projOverall)
