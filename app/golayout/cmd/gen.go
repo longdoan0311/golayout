@@ -27,6 +27,7 @@ var genCmd = &cobra.Command{
 	Long:  `Generate Golang project layout`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Start generating Golang project layout")
+		normParam()
 		golayout.Generate(golayout.ProjectOverall{
 			ProjName: projName,
 			ModName:  modName,
