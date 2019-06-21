@@ -10,12 +10,14 @@ import (
 
 var (
 	projName string
+	modName  string
 )
 
 func init() {
 	rootCmd.AddCommand(genCmd)
 
-	genCmd.Flags().StringVarP(&projName, "proj_name", "n", "", "Path to the JSON files directory")
+	genCmd.Flags().StringVarP(&projName, "proj_name", "n", "", "Project name")
+	genCmd.Flags().StringVarP(&modName, "module_name", "m", "", "Module name (in case of go module), default is proj_name")
 	genCmd.MarkFlagRequired("proj_name")
 }
 
@@ -25,6 +27,15 @@ var genCmd = &cobra.Command{
 	Long:  `Generate Golang project layout`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Start generating Golang project layout")
-		golayout.Generate(projName)
+		golayout.Generate(golayout.ProjectOverall{
+			ProjName: projName,
+			ModName:  modName,
+		})
 	},
+}
+
+func normParam() {
+	if modName == "" {
+		modName = projName
+	}
 }

@@ -1,21 +1,33 @@
 package golayout
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/gobuffalo/packr/v2"
 	log "github.com/sirupsen/logrus"
 )
 
 var (
-	projName string
+	projOverall ProjectOverall
+	tpl         *template.Template
 )
 
-func Generate(projectName string) error {
-	log.Infof("Generate project %s", projectName)
-	projName = projectName
+const (
+	AppNamePlaceholder = "appname"
+)
+
+type ProjectOverall struct {
+	ProjName string
+	ModName  string
+}
+
+func Generate(project ProjectOverall) error {
+	log.Infof("Generate project %s", project.ProjName)
+	projOverall = project
 
 	if err := setup(); err != nil {
 		log.Fatal(err)
@@ -23,35 +35,58 @@ func Generate(projectName string) error {
 
 	err := travel()
 	tearDownIfError(err)
+
+	log.Infof("Finish to generate project %s", project.ProjName)
+
 	return err
 }
 
 func setup() error {
 	log.Infof("Create project directory")
-	return os.Mkdir(projName, 0751)
+	return os.Mkdir(projOverall.ProjName, 0751)
 }
 
 func tearDownIfError(err error) {
 	if err != nil {
-		os.RemoveAll(projName)
+		os.RemoveAll(projOverall.ProjName)
 		log.Fatal(err)
 	}
 }
 
 func travel() error {
 	err := TemplateBox.Walk(func(s string, f packr.File) error {
+		s = strings.ReplaceAll(s, AppNamePlaceholder, projOverall.ProjName)
 		log.Infof("walk to %s", s)
-		return toFile(s, f.String())
+
+		d, e := compileTpl(f.String())
+		if e != nil {
+			return e
+		}
+
+		return toFile(s, d)
 	})
 
 	return err
+}
+
+func compileTpl(tplString string) (string, error) {
+	buf := &bytes.Buffer{}
+	log.Infof("tplString %s", tplString)
+	tpl = template.Must(template.New("letter").Parse(tplString))
+
+	err := tpl.Execute(buf, projOverall)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }
 
 func toFile(relativeFilePath, content string) error {
 	// remove .tpl
 	rp := strings.TrimSuffix(relativeFilePath, TemplateExt)
 	// open output file
-	fp := filepath.Join(projName, rp)
+	fp := filepath.Join(projOverall.ProjName, rp)
 	fo, err := CreateFileIncludeDir(fp)
 	if err != nil {
 		return err
