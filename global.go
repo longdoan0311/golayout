@@ -7,5 +7,5 @@ import (
 var TemplateBox *packr.Box
 
 const (
-	TemplateExt = ".tpl"
+	TemplateExt = ".ttpl"
 )
