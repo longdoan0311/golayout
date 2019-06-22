@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/3t-dev/golayout"
+	"github.com/techcomsecurities/golayout"
 )
 
 var (

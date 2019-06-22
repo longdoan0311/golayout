@@ -37,7 +37,7 @@ This layout is inspired from [Ben Johnson's article](https://medium.com/@benbjoh
 * Get it
 
 ```
-go get github.com/3t-dev/golayout/app/golayout
+go get github.com/techcomsecurities/golayout/app/golayout
 ```
 
 * Generate your project layout

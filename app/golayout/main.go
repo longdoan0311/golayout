@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/3t-dev/golayout"
-	"github.com/3t-dev/golayout/app/golayout/cmd"
+	"github.com/techcomsecurities/golayout"
+	"github.com/techcomsecurities/golayout/app/golayout/cmd"
 	"github.com/gobuffalo/packr/v2"
 )
 

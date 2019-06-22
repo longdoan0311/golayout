@@ -1,4 +1,4 @@
-module github.com/3t-dev/golayout
+module github.com/techcomsecurities/golayout
 
 go 1.12
 
